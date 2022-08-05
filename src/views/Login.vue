@@ -58,7 +58,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import axios from 'axios';
+import { apiUserLogin } from '../api/api'
 
 const router = useRouter()
 const route = useRoute()
@@ -72,10 +72,10 @@ let isRememberMe = ref(false)
 onMounted(() => {
   let account = localStorage.getItem('account')
   if (account) {
-    accountAD = account
+    accountAD.value = account
     // TODO: yarn add base64
     // loginForm.password = Base64.decode(localStorage.getItem('password'))
-    passwordAD = localStorage.getItem('password')
+    passwordAD.value = localStorage.getItem('password')
     isRememberMe.value = true
   }
 })
@@ -86,25 +86,25 @@ const fakeLogin = () => {
 }
 
 const loginAD = async () => {
-  const ADAccount = String(accountAD.value).toUpperCase()
-  const Pwd = passwordAD.value
-  const api = '/Login/Login'
+  const account = String(accountAD.value).toUpperCase()
+  const password = passwordAD.value
+  
   const json = {
     Token: '',
     Language: 'zh-TW',
     Data: {
-      ADAccount, Pwd
+      ADAccount: account, Pwd: password
     }
   }
 
   try {
-    const { data } = await axios.post(api, json)
+    const { data } = await apiUserLogin(json)
 
     if (data.ReturnCode === '0000') {
-      localStorage.setItem('user', JSON.stringify(ADAccount))
+      localStorage.setItem('user', JSON.stringify(account))
       if (isRememberMe.value) {
-        localStorage.setItem('account', ADAccount)
-        localStorage.setItem('password', Pwd)
+        localStorage.setItem('account', account)
+        localStorage.setItem('password', password)
       } else {
         localStorage.removeItem('account')
         localStorage.removeItem('password')
