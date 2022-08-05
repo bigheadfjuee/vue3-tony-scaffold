@@ -19,7 +19,7 @@
                 <label class="mb-1">
                   <h6 class="mb-0 text-sm">帳號</h6>
                 </label>
-                <input class="mb-4" type="text" name="accountAD" v-model="accountAD" placeholder="Enter a valid AD"
+                <input class="mb-4" type="text" name="accountAD" v-model="accountAD" placeholder="Enter account"
                   autocomplete="off" v-on:keyup.enter="loginAD">
               </div>
               <div class="row px-3">
@@ -29,8 +29,13 @@
                 <input type="password" name="passwordAD" v-model="passwordAD" placeholder="Enter password"
                   autocomplete="off" v-on:keyup.enter="loginAD">
               </div>
-              <div class="row px-3 mb-4">
-                <el-checkbox v-model="isRememberMe" class="rememberMe">記住我</el-checkbox>
+              <div class="row justify-content-start px-3 mb-4">
+                <div class="col-2">
+                  <el-checkbox v-model="isRememberMe" class="rememberMe">記住我</el-checkbox>
+                </div>
+                <div class="col-2">
+                  <el-button @click="fakeLogin" class="">假登入</el-button>
+                </div>
               </div>
               <div class="row mb-3 px-3">
                 <button type="submit" class="btn bg-primary text-white text-center"
@@ -54,6 +59,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { axios } from 'axios';
+
 const router = useRouter()
 const route = useRoute()
 
@@ -74,14 +80,15 @@ onMounted(() => {
   }
 })
 
+const fakeLogin = () => {
+  localStorage.setItem('user', JSON.stringify('tony'))
+  router.push("/home")
+}
 
 const loginAD = async () => {
-
   const ADAccount = String(accountAD).toUpperCase()
   const Pwd = passwordAD
-
   const api = '/Login/Login'
-
   const json = {
     Token: '',
     Language: 'zh-TW',
@@ -91,11 +98,7 @@ const loginAD = async () => {
   }
 
   try {
-    // const { data } = await axios.post(api, json)
-    let data = {
-      ReturnCode: '0000',
-      ADAccount: 'tony'
-    }
+    const { data } = await axios.post(api, json)
 
     if (data.ReturnCode === '0000') {
       localStorage.setItem('user', JSON.stringify(ADAccount))
@@ -143,15 +146,9 @@ body {
   border-radius: 0px;
 }
 
-.card2 {
-  margin: 0px 40px;
-}
-
-
 .border-line {
   border-right: 1px solid #EEEEEE;
 }
-
 
 .text-sm {
   font-size: 20px !important;
@@ -209,14 +206,8 @@ a {
 }
 
 @media screen and (max-width: 991px) {
-
   .border-line {
     border-right: none;
-  }
-
-  .card2 {
-    border-top: 1px solid #EEEEEE !important;
-    margin: 0px 15px;
   }
 }
 </style>
