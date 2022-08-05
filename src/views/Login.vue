@@ -19,19 +19,19 @@
                 <label class="mb-1">
                   <h6 class="mb-0 text-sm">帳號</h6>
                 </label>
-                <input class="mb-4" type="text" name="accountAD" v-model="accountAD" placeholder="Enter account"
+                <input class="mb-4" type="text" name="accountAD" v-model="state.accountAD" placeholder="Enter account"
                   autocomplete="off" v-on:keyup.enter="loginAD">
               </div>
               <div class="row px-3">
                 <label class="mb-1">
                   <h6 class="mb-0 text-sm">密碼</h6>
                 </label>
-                <input type="password" name="passwordAD" v-model="passwordAD" placeholder="Enter password"
+                <input type="password" name="passwordAD" v-model="state.passwordAD" placeholder="Enter password"
                   autocomplete="off" v-on:keyup.enter="loginAD">
               </div>
               <div class="row justify-content-start px-3 mb-4">
                 <div class="col-2">
-                  <el-checkbox v-model="isRememberMe" class="rememberMe">記住我</el-checkbox>
+                  <el-checkbox v-model="state.isRememberMe" class="rememberMe">記住我</el-checkbox>
                 </div>
                 <div class="col-2">
                   <el-button @click="fakeLogin" class="">假登入</el-button>
@@ -42,41 +42,38 @@
                   @click.prevent="loginAD">Login</button>
               </div>
               <el-alert :title="errMessage" type="error" v-if="isError" />
-
             </div>
-
           </el-tabs>
-
         </div>
 
       </div>
-
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { onMounted, reactive } from 'vue'
+import { useRouter } from 'vue-router'
 import { apiUserLogin } from '../api/api'
 
 const router = useRouter()
-const route = useRoute()
 
-let accountAD = ref('')
-let passwordAD = ref('')
-let isError = ref(false)
-let errMessage = ref('')
-let isRememberMe = ref(false)
+const state = reactive({
+  accountAD: '',
+  passwordAD: '',
+  isError: false,
+  errMessage: '',
+  isRememberMe: false
+})
 
 onMounted(() => {
   let account = localStorage.getItem('account')
   if (account) {
-    accountAD.value = account
+    state.accountAD = account
     // TODO: yarn add base64
     // loginForm.password = Base64.decode(localStorage.getItem('password'))
-    passwordAD.value = localStorage.getItem('password')
-    isRememberMe.value = true
+    state.passwordAD = localStorage.getItem('password')
+    state.isRememberMe = true
   }
 })
 
@@ -86,9 +83,9 @@ const fakeLogin = () => {
 }
 
 const loginAD = async () => {
-  const account = String(accountAD.value).toUpperCase()
-  const password = passwordAD.value
-  
+  const account = state.accountAD.toUpperCase()
+  const password = state.passwordAD
+
   const json = {
     Token: '',
     Language: 'zh-TW',
@@ -102,7 +99,7 @@ const loginAD = async () => {
 
     if (data.ReturnCode === '0000') {
       localStorage.setItem('user', JSON.stringify(account))
-      if (isRememberMe.value) {
+      if (state.isRememberMe) {
         localStorage.setItem('account', account)
         localStorage.setItem('password', password)
       } else {
@@ -110,19 +107,19 @@ const loginAD = async () => {
         localStorage.removeItem('password')
       }
 
-      isError.value = false
+      state.isError = false
       router.push("/home")
     } else {
-      isError.value = true
-      errMessage.value = data.ReturnMsg
+      state.isError = true
+      state.errMessage = data.ReturnMsg
       // ReturnCode: "1201"
       // ReturnMsg: "AD 認證失敗:使用者名稱或密碼不正確。\r\n"
       logout();
     }
   } catch (error) {
     console.log(error);
-    isError.value = true
-    errMessage.value = 'LoginAD failed'
+    state.isError = true
+    state.errMessage = 'LoginAD failed'
     logout();
   }
 }
