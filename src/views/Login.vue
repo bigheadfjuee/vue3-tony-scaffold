@@ -58,7 +58,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { axios } from 'axios';
+import axios from 'axios';
 
 const router = useRouter()
 const route = useRoute()
@@ -76,7 +76,7 @@ onMounted(() => {
     // TODO: yarn add base64
     // loginForm.password = Base64.decode(localStorage.getItem('password'))
     passwordAD = localStorage.getItem('password')
-    isRememberMe = true
+    isRememberMe.value = true
   }
 })
 
@@ -86,8 +86,8 @@ const fakeLogin = () => {
 }
 
 const loginAD = async () => {
-  const ADAccount = String(accountAD).toUpperCase()
-  const Pwd = passwordAD
+  const ADAccount = String(accountAD.value).toUpperCase()
+  const Pwd = passwordAD.value
   const api = '/Login/Login'
   const json = {
     Token: '',
@@ -102,7 +102,7 @@ const loginAD = async () => {
 
     if (data.ReturnCode === '0000') {
       localStorage.setItem('user', JSON.stringify(ADAccount))
-      if (isRememberMe) {
+      if (isRememberMe.value) {
         localStorage.setItem('account', ADAccount)
         localStorage.setItem('password', Pwd)
       } else {
@@ -110,19 +110,19 @@ const loginAD = async () => {
         localStorage.removeItem('password')
       }
 
-      isError = false
+      isError.value = false
       router.push("/home")
     } else {
-      isError = true
-      errMessage = data.ReturnMsg
+      isError.value = true
+      errMessage.value = data.ReturnMsg
       // ReturnCode: "1201"
       // ReturnMsg: "AD 認證失敗:使用者名稱或密碼不正確。\r\n"
       logout();
     }
   } catch (error) {
     console.log(error);
-    isError = true
-    errMessage = 'LoginAD failed'
+    isError.value = true
+    errMessage.value = 'LoginAD failed'
     logout();
   }
 }
