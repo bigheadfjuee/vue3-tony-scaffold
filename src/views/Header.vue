@@ -32,6 +32,7 @@ import { useRoute, useRouter } from 'vue-router'
 const router = useRouter()
 const route = useRoute()
 const activeItem = computed(() => route.path)
+
 const logout = () => {
   localStorage.removeItem('user')
   router.push("/")
