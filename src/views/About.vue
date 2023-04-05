@@ -1,8 +1,11 @@
 <template>
   <AppHeader />
-  <h1>About</h1>
+  <div class="constainer">
+    <h1>About</h1>
+  </div>
 </template>
 
 <script setup>
 import AppHeader from './Header.vue'
+
 </script>

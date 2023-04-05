@@ -1,10 +1,4 @@
-import { createStore } from "vuex";
-import account from './account';
+import { createPinia } from "pinia" 
+const store = createPinia()
 
-const store = createStore({
-  modules: {
-    account,
-  }
-})
-
-export default store;
+export default store

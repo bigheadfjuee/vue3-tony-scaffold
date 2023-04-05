@@ -1,22 +1,30 @@
 <template>
   <AppHeader />
-  <h1>首頁</h1>
-  <div class="container py-4 px-3 mx-auto">
+  <div class="container">
     <h1>Hello, Bootstrap and Vite!</h1>
-    <button class="btn btn-primary">Primary button</button>
-  </div>
-  <el-card class="box-card" style="margin:5em">
-    <template #header>
-      <div class="card-header">
-        <span>Element Plus</span>
-        <el-button class="button" text>Operation button</el-button>
+
+    <el-card class="m-3">
+      <h2> Pinia </h2>
+      <div>
+        <button class="btn btn-primary mx-2" @click="store.increment">store.increment</button>
+        <button class="btn btn-primary mx-2" @click="store.decrement">store.decrement</button>
       </div>
-    </template>
-    <div v-for="n in 4" :key="n" class="text item">{{ 'List item ' + n }}</div>
-    <el-icon>
-      <Edit />
-    </el-icon>
-  </el-card>
+      <div>store.counter {{ store.counter }}</div>
+      <div>store.double {{ store.double }}</div>
+    </el-card>
+    <el-card class="m-3">
+      <template #header>
+        <div class="card-header">
+          <span>Element Plus</span>
+          <el-button class="button" @click="showMsg">ELNotification</el-button>
+        </div>
+      </template>
+      <div v-for="n in 4" :key="n" class="text item">{{ 'List item ' + n }}</div>
+      <el-icon>
+        <Edit />
+      </el-icon>
+    </el-card>
+  </div>
 </template>
 
 
@@ -24,14 +32,19 @@
 import { onMounted } from 'vue'
 import { ElNotification } from 'element-plus'
 import AppHeader from './Header.vue'
+import { useCounterStore } from '../store/counter';
+
+const store = useCounterStore()
 
 onMounted(() => {
-  ElNotification({
-    message: '通知',
-    type: 'warning',
-    duration: 0,
-    // position: 'bottom-right',      
-  })
+
+})
+
+const showMsg = () => ElNotification({
+  message: '通知',
+  type: 'warning',
+  duration: 0,
+  // position: 'bottom-right',      
 })
 
 </script>

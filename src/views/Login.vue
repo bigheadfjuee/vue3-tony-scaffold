@@ -1,5 +1,4 @@
 <template>
-
   <div class="container-fluid px-1 px-md-5 px-lg-1 px-xl-5 py-5 mx-auto">
     <div class="card card0 border-0">
       <div class="row d-flex">
@@ -19,14 +18,14 @@
                 <label class="mb-1">
                   <h6 class="mb-0 text-sm">帳號</h6>
                 </label>
-                <input class="mb-4" type="text" name="accountAD" v-model="state.accountAD" placeholder="Enter account"
+                <input class="mb-4" type="text" name="account" v-model="state.account" placeholder="Enter account"
                   autocomplete="off" v-on:keyup.enter="loginAD">
               </div>
               <div class="row px-3">
                 <label class="mb-1">
                   <h6 class="mb-0 text-sm">密碼</h6>
                 </label>
-                <input type="password" name="passwordAD" v-model="state.passwordAD" placeholder="Enter password"
+                <input type="password" name="password" v-model="state.password" placeholder="Enter password"
                   autocomplete="off" v-on:keyup.enter="loginAD">
               </div>
               <div class="row justify-content-start px-3 mb-4">
@@ -59,32 +58,38 @@ import { apiUserLogin } from '../api/api'
 const router = useRouter()
 
 const state = reactive({
-  accountAD: '',
-  passwordAD: '',
+  account: '',
+  password: '',
   isError: false,
   errMessage: '',
   isRememberMe: false
 })
 
 onMounted(() => {
-  let account = localStorage.getItem('account')
+  const user = localStorage.getItem('user')
+
+  const account = user?.account 
   if (account) {
-    state.accountAD = account
     // TODO: yarn add base64
     // loginForm.password = Base64.decode(localStorage.getItem('password'))
-    state.passwordAD = localStorage.getItem('password')
+    state.password = user.password
     state.isRememberMe = true
   }
 })
 
 const fakeLogin = () => {
-  localStorage.setItem('user', JSON.stringify('tony'))
+  const user = {
+    account: 'tony',
+    password: '1234'
+  }
+  
+  localStorage.setItem('user', JSON.stringify(user))
   router.push("/home")
 }
 
 const loginAD = async () => {
-  const account = state.accountAD.toUpperCase()
-  const password = state.passwordAD
+  const account = state.account.toUpperCase()
+  const password = state.password
 
   const json = {
     Token: '',
@@ -98,7 +103,7 @@ const loginAD = async () => {
     const { data } = await apiUserLogin(json)
 
     if (data.ReturnCode === '0000') {
-      localStorage.setItem('user', JSON.stringify(account))
+
       if (state.isRememberMe) {
         localStorage.setItem('account', account)
         localStorage.setItem('password', password)
@@ -129,15 +134,7 @@ const logout = () => {
 }
 </script>
 
-<style scoped>
-body {
-  color: #000;
-  overflow-x: hidden;
-  height: 100%;
-  background-color: #B0BEC5;
-  background-repeat: no-repeat;
-}
-
+<style scoped lang="scss">
 .card0 {
   box-shadow: 0px 4px 8px 0px #757575;
   border-radius: 0px;
@@ -157,16 +154,6 @@ body {
   font-weight: 300
 }
 
-:-ms-input-placeholder {
-  color: #616161;
-  font-weight: 300
-}
-
-::-ms-input-placeholder {
-  color: #BDBDBD;
-  font-weight: 300
-}
-
 input,
 textarea {
   padding: 10px 12px 10px 12px;
@@ -179,27 +166,20 @@ textarea {
   color: #2C3E50;
   font-size: 14px;
   letter-spacing: 1px;
+
+  :focus {
+    box-shadow: none !important;
+    border: 1px solid #304FFE;
+    outline-width: 0;
+  }
 }
 
-input:focus,
-textarea:focus {
-  -moz-box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  box-shadow: none !important;
-  border: 1px solid #304FFE;
-  outline-width: 0;
+button:hover{
+  opacity: 0.8;
 }
 
-button:focus {
-  -moz-box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  box-shadow: none !important;
-  outline-width: 0;
-}
-
-a {
-  color: inherit;
-  cursor: pointer;
+.el-checkbox {
+  scale: 1.2;
 }
 
 @media screen and (max-width: 991px) {
