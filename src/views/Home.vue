@@ -4,13 +4,7 @@
     <h1>Hello, Bootstrap and Vite!</h1>
 
     <el-card class="m-3">
-      <h2> Pinia </h2>
-      <div>
-        <button class="btn btn-primary mx-2" @click="store.increment">store.increment</button>
-        <button class="btn btn-primary mx-2" @click="store.decrement">store.decrement</button>
-      </div>
-      <div>store.counter {{ store.counter }}</div>
-      <div>store.double {{ store.double }}</div>
+      <DemoStores></DemoStores>
     </el-card>
     <el-card class="m-3">
       <template #header>
@@ -29,16 +23,9 @@
 
 
 <script setup>
-import { onMounted } from 'vue'
 import { ElNotification } from 'element-plus'
-import AppHeader from './Header.vue'
-import { useCounterStore } from '../store/counter';
-
-const store = useCounterStore()
-
-onMounted(() => {
-
-})
+import AppHeader from '@/components/Header.vue'
+import DemoStores from '@/components/DemoStores.vue'
 
 const showMsg = () => ElNotification({
   message: '通知',

@@ -6,6 +6,6 @@
 </template>
 
 <script setup>
-import AppHeader from './Header.vue'
+import AppHeader from '@/components/Header.vue'
 
 </script>
